@@ -2,6 +2,24 @@
 pipeline {
     agent any
 
+    parameters {
+        choice(
+            name: 'BROWSER',
+            choices: ['chromium', 'firefox', 'webkit'],
+            description: 'Select browser'
+        )
+
+        booleanParam(
+            name: 'HEADLESS',
+            defaultValue: true,
+            description: 'Run tests in headless mode'
+        )
+    }
+
+    environment {
+        CI = 'true'
+    }
+
     stages {
         stage('Install Dependencies') {
             steps {
@@ -11,13 +29,13 @@ pipeline {
 
         stage('Install Browsers') {
             steps {
-                bat 'npx playwright install --with-deps'
+                bat 'npx playwright install'
             }
         }
 
         stage('Run Tests') {
             steps {
-                bat 'npx playwright test'
+                bat "npx playwright test --project=${params.BROWSER}"
             }
         }
     }
