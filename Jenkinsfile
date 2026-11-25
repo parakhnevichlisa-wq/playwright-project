@@ -43,6 +43,16 @@ pipeline {
     post {
         always {
             echo 'Pipeline finished'
+
+            archiveArtifacts(
+                artifacts: 'allure-results/**',
+                allowEmptyArchive: true
+            )
+
+            allure([
+                includeProperties: false,
+                results: [[path: 'allure-results']]
+            ])
         }
 
         success {
